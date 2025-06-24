@@ -1,40 +1,72 @@
-import EdgeKeys from './EdgeKeys'
-import EdgeKey from './EdgeKey'
-import Point from './Point'
+import EdgeKeys from './EdgeKeys.js'
+import EdgeKey from './EdgeKey.js'
+import Point from './Point.js'
 
-import { edgeIntersect, onSegment, ccw, calcEdgeDistance } from './utils'
-import { _renderSortedPoints, _renderOpenEdges } from './debug' //eslint-disable-line
+import { cppProcess } from './CppProcess.js'
+
+import { getSortedPointsFromCpp } from './cppInterface.js'
+import { registerPoints } from './PointMap.js'
+
+import { edgeIntersect, onSegment, ccw, calcEdgeDistance } from './utils.js'
+import { _renderSortedPoints, _renderOpenEdges } from './debug.js' //eslint-disable-line
 
 export const FULL_PROCESS = 0
 export const HALF_PROCESS = 1
 
-export function createGraphFromGeoJson (visibilityGraph) {
-  processGraph(visibilityGraph)
+export async function createGraphFromGeoJson (visibilityGraph) {
+  await processGraph(visibilityGraph)
 }
 
-export function addSinglePoint (visibilityGraph, p) {
-  processPoint(p, visibilityGraph._points.length, FULL_PROCESS, visibilityGraph)
+export async function addSinglePoint (visibilityGraph, p) {
+  await processPoint(p, visibilityGraph._points.length, FULL_PROCESS, visibilityGraph)
 }
 
-function processGraph (visibilityGraph) {
+async function processGraph (visibilityGraph) {
+  const uniquePoints = []
+  const seen = new Set()
+  console.log("initialization begin")
+  const startTime = performance.now()
+  for (const pt of visibilityGraph._points) {
+    const key = `${pt.x},${pt.y}`
+    if (!seen.has(key)) {
+      uniquePoints.push(pt)
+      seen.add(key)
+    }
+  }
+  await cppProcess.startWithPoints(uniquePoints)
+  const endTime = performance.now()
+  console.log("initialization done")
+  console.log(`Initialization took ${endTime - startTime} milliseconds`)
+  
+  // cppProcess.startWithPoints(visibilityGraph._points)
+
+  registerPoints(visibilityGraph._clonedPoints)
+  
   const points = visibilityGraph._points
   const pointsLen = points.length
   const scan = HALF_PROCESS
   for (var i = 0; i < pointsLen; i++) {
     const p = points[i]
-    processPoint(p, pointsLen, scan, visibilityGraph)
+    console.log("process point " + p)
+    await processPoint(p, pointsLen, scan, visibilityGraph)
   }
+
+  cppProcess.terminate()
 }
 
-export function processPoint (p, pointsLen, scan, visibilityGraph) {
+export async function processPoint (p, pointsLen, scan, visibilityGraph) {
   const clonedPoints = visibilityGraph._clonedPoints
+  // console.log("length given: " + pointsLen)
+  // console.log("lengh: " + clonedPoints.length)
+  // console.log("cloned points: " + clonedPoints)
   const edges = visibilityGraph._edges
   const polygons = visibilityGraph._polygons
   const g = visibilityGraph.graph
   const prevPoint = p.prevPoint
   const nextPoint = p.nextPoint
+  await sortPoints2(p, clonedPoints)
 
-  sortPoints(p, clonedPoints)
+  
   // _renderSortedPoints(p, clonedPoints)
 
   const openEdges = new EdgeKeys()
@@ -47,7 +79,7 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
       openEdges.addKey(new EdgeKey(p, pointInf, e))
     }
   }
-  if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
+  // if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
   // _renderOpenEdges(p, openEdges.keys)
 
   const visible = []
@@ -56,6 +88,9 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
 
   for (let ii = 0; ii < pointsLen; ii++) {
     const p2 = clonedPoints[ii]
+    if (!p2) {
+      console.warn('Warning: p2 is undefined at index', ii)
+    }
     if (p2.isPointEqual(p)) continue
     if (scan === HALF_PROCESS && p.angleToPoint(p2) > Math.PI) {
       break
@@ -73,7 +108,7 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
         }
       }
     }
-    if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
+    // if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
 
     let isVisible = false
     if (prev === null || ccw(p, prev, p2) !== 0 || !onSegment(p, prev, p2)) {
@@ -135,6 +170,22 @@ export function sortPoints (point, clonedPoints) {
     return 0
   })
 }
+
+export function sortPointsCpp(referencePoint, points) {
+  registerPoints(points)         // 確保所有點都已經註冊
+  // registerPoints([referencePoint]) // 也註冊 referencePoint 本身
+
+  return cppProcess.query(referencePoint)
+}
+
+export async function sortPoints2 (point, clonedPoints) {
+  const sorted = await sortPointsCpp(point, clonedPoints)
+  // console.log("sorted: ")
+  clonedPoints.length = 0
+  clonedPoints.push(...sorted)
+}
+
+
 
 function edgeInPolygon (p1, p2, polygons) {
   if (p1.polygonID !== p2.polygonID) return false

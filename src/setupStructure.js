@@ -1,6 +1,6 @@
-import Contour from './Contour'
-import Point from './Point'
-import Edge from './Edge'
+import Contour from './Contour.js'
+import Point from './Point.js'
+import Edge from './Edge.js'
 
 export function setupStructure (vg) {
   const geom = vg._geojson.type === 'Feature' ? vg._geojson.geometry : vg._geojson

@@ -1,10 +1,10 @@
-import { pi1, pi2 } from './utils'
+import { pi1, pi2 } from './utils.js'
 
-let nodeId = 0
+
 
 export default class Point {
 
-  constructor (coords, polygonID) {
+  constructor(coords, polygonID = -1, nodeId = Point.globalNodeId++) {
     this.x = coords[0]
     this.y = coords[1]
     this.nodeId = nodeId
@@ -12,7 +12,6 @@ export default class Point {
     this.edges = []
     this.prevPoint = null
     this.nextPoint = null
-    nodeId++
   }
 
   isPointEqual (otherPoint) {
@@ -31,3 +30,4 @@ export default class Point {
     return Math.atan(dy / dx)
   }
 }
+Point.globalNodeId = 0
