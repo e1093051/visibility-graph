@@ -1,9 +1,9 @@
-import EdgeKeys from './EdgeKeys.js'
-import EdgeKey from './EdgeKey.js'
-import Point from './Point.js'
+import EdgeKeys from './EdgeKeys'
+import EdgeKey from './EdgeKey'
+import Point from './Point'
 
-import { edgeIntersect, onSegment, ccw, calcEdgeDistance } from './utils.js'
-import { _renderSortedPoints, _renderOpenEdges } from './debug.js' //eslint-disable-line
+import { edgeIntersect, onSegment, ccw, calcEdgeDistance } from './utils'
+import { _renderSortedPoints, _renderOpenEdges } from './debug' //eslint-disable-line
 
 export const FULL_PROCESS = 0
 export const HALF_PROCESS = 1
@@ -47,7 +47,7 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
       openEdges.addKey(new EdgeKey(p, pointInf, e))
     }
   }
-  // if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
+  if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
   // _renderOpenEdges(p, openEdges.keys)
 
   const visible = []
@@ -61,40 +61,38 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
       break
     }
 
-    if (openEdges.keys.size > 0) {
+    if (openEdges.keys.length > 0) {
       for (let iii = 0; iii < p2.edges.length; iii++) {
         const e = p2.edges[iii]
         if (ccw(p, p2, e.getOtherPointInEdge(p2)) === -1) {
           const k = new EdgeKey(p, p2, e)
-          if (openEdges.keys.contains(k)) {
-             openEdges.keys.remove(k)
+          const index = openEdges.findKeyPosition(k) - 1
+          if (index !== -1 && openEdges.keys[index].matchesOtherKey(k)) {
+            openEdges.keys.splice(index, 1)
           }
         }
       }
     }
-    // if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
+    if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
 
     let isVisible = false
     if (prev === null || ccw(p, prev, p2) !== 0 || !onSegment(p, prev, p2)) {
-      if (openEdges.keys.size === 0) {
+      if (openEdges.keys.length === 0) {
         isVisible = true
-      } else if (!edgeIntersect(p, p2, openEdges.keys.min().edge)) {
+      } else if (!edgeIntersect(p, p2, openEdges.keys[0].edge)) {
         isVisible = true
       }
     } else if (!prevVisible) {
       isVisible = false
     } else {
       isVisible = true
-      console.log("first true")
-      openEdges.keys.forEach((node) => {
-        const e = node.key
+      for (let iii = 0; iii < openEdges.keys.length; iii++) {
+        const e = openEdges.keys[iii]
         if (!e.edge.containsPoint(prev) && edgeIntersect(prev, p2, e.edge)) {
-          console.log("is false")
           isVisible = false
+          break
         }
-      })
-      
-      
+      }
       if (isVisible && edgeInPolygon(prev, p2, polygons)) isVisible = false
     }
 
