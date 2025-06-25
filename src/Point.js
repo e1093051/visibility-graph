@@ -1,4 +1,4 @@
-import { pi1, pi2 } from './utils'
+import { pi1, pi2 } from './utils.js'
 
 let nodeId = 0
 

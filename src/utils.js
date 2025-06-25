@@ -1,4 +1,4 @@
-import Point from './Point'
+import Point from './Point.js'
 import { orient2d } from 'robust-predicates'
 
 export const pi1 = Math.PI * 3 / 2
