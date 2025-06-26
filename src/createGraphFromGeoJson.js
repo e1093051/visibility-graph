@@ -47,7 +47,7 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
       openEdges.addKey(new EdgeKey(p, pointInf, e))
     }
   }
-  // if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
+  if (openEdges.keys.size > 100) console.log(openEdges.keys.length)
   // _renderOpenEdges(p, openEdges.keys)
 
   const visible = []
@@ -67,36 +67,29 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
         if (ccw(p, p2, e.getOtherPointInEdge(p2)) === -1) {
           const k = new EdgeKey(p, p2, e)
           if (openEdges.keys.contains(k)) {
-            console.log('MATCHED KEY')
             openEdges.keys.remove(k)
-          } else {
-            console.log('KEY NOT FOUND IN TREE')
-          }        
+          }
+          for (const edge of openEdges.keys.keys())      
+            console.log(p2.nodeId, edge.p1.nodeId,edge.p2.nodeId)
         }
       }
     }
-    // if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
+    if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
 
     let isVisible = false
-    if (p.nodeId === 14 && p2.nodeId === 3) {
-      console.log("🔥 EDGE 14 → 3 被允許，開始追蹤原因")
-      // you can even throw if needed:
-      // throw new Error("Edge 14 → 3 created!")
-    }
     if (prev === null || ccw(p, prev, p2) !== 0 || !onSegment(p, prev, p2)) {
       if (openEdges.keys.size === 0) {
-        console.log("🟢 14→3 通過，因為沒有遮擋")
         isVisible = true
       } else if (!edgeIntersect(p, p2, openEdges.keys.min().edge)) {
-        console.log("🟡 14→3 通過，因為和 min edge 不相交")
         isVisible = true
       }
+      
     } else if (!prevVisible) {
       isVisible = false
     } else {
       isVisible = true
 
-      for (const edgeKey of openEdges.keys) {
+      for (const edgeKey of openEdges.keys.keys()) {
         const e = edgeKey.edge
         if (!e.containsPoint(prev) && edgeIntersect(prev, p2, e)) {
           isVisible = false
