@@ -1,9 +1,9 @@
-import EdgeKeys from './EdgeKeys'
-import EdgeKey from './EdgeKey'
-import Point from './Point'
+import EdgeKeys from './EdgeKeys.js'
+import EdgeKey from './EdgeKey.js'
+import Point from './Point.js'
 
-import { edgeIntersect, onSegment, ccw, calcEdgeDistance } from './utils'
-import { _renderSortedPoints, _renderOpenEdges } from './debug' //eslint-disable-line
+import { edgeIntersect, onSegment, ccw, calcEdgeDistance } from './utils.js'
+import { _renderSortedPoints, _renderOpenEdges } from './debug.js' //eslint-disable-line
 
 export const FULL_PROCESS = 0
 export const HALF_PROCESS = 1
@@ -98,8 +98,11 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
 
     const isInAdjacentPoints = p2.isPointEqual(prevPoint) || p2.isPointEqual(nextPoint)
     if (isVisible && !isInAdjacentPoints) isVisible = !edgeInPolygon(p, p2, polygons)
-
-    if (isVisible) visible.push(p2)
+  
+    if (isVisible) {
+      console.log("push a point")
+      visible.push(p2)
+    }
 
     for (let iii = 0; iii < p2.edges.length; iii++) {
       const e = p2.edges[iii]
