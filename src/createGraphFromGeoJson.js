@@ -67,8 +67,11 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
         if (ccw(p, p2, e.getOtherPointInEdge(p2)) === -1) {
           const k = new EdgeKey(p, p2, e)
           if (openEdges.keys.contains(k)) {
-             openEdges.keys.remove(k)
-          }
+            console.log('MATCHED KEY')
+            openEdges.keys.remove(k)
+          } else {
+            console.log('KEY NOT FOUND IN TREE')
+          }        
         }
       }
     }
