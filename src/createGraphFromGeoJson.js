@@ -88,15 +88,14 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
       isVisible = false
     } else {
       isVisible = true
-      console.log("first true")
-      openEdges.keys.forEach((node) => {
-        const e = node.key
-        if (!e.edge.containsPoint(prev) && edgeIntersect(prev, p2, e.edge)) {
-          console.log("is false")
+
+      for (const edgeKey of openEdges.keys) {
+        const e = edgeKey.edge
+        if (!e.containsPoint(prev) && edgeIntersect(prev, p2, e)) {
           isVisible = false
+          break
         }
-      })
-      
+      }
       
       if (isVisible && edgeInPolygon(prev, p2, polygons)) isVisible = false
     }
