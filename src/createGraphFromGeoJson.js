@@ -68,10 +68,10 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
           const k = new EdgeKey(p, p2, e)
           const index = openEdges.findKeyPosition(k) - 1
           if (index !== -1 && openEdges.keys[index].matchesOtherKey(k)) {
-            console.log('MATCHED KEY')
             openEdges.keys.splice(index, 1)
-          } else {
-            console.log('KEY NOT FOUND IN TREE')
+          }
+          for (const edge of openEdges.keys){
+            console.log(p2.nodeId,edge.p1.nodeId,edge.p2.nodeId)
           }
         }
       }
