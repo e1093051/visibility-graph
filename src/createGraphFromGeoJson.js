@@ -68,7 +68,10 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
           const k = new EdgeKey(p, p2, e)
           const index = openEdges.findKeyPosition(k) - 1
           if (index !== -1 && openEdges.keys[index].matchesOtherKey(k)) {
+            console.log('MATCHED KEY')
             openEdges.keys.splice(index, 1)
+          } else {
+            console.log('KEY NOT FOUND IN TREE')
           }
         }
       }
@@ -100,7 +103,6 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
     if (isVisible && !isInAdjacentPoints) isVisible = !edgeInPolygon(p, p2, polygons)
   
     if (isVisible) {
-      console.log("push a point")
       visible.push(p2)
     }
 
