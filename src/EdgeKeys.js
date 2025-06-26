@@ -5,6 +5,21 @@ export default class EdgeKeys {
   constructor () {
     // this.keys = []
     
+  const comparator = (a, b) => {
+    const comparePoints = (p1, p2) => {
+      if (p1.x !== p2.x) return p1.x - p2.x
+      return p1.y - p2.y
+    }
+  
+    const [a1, a2] = comparePoints(a.edge.p1, a.edge.p2) <= 0 ? [a.edge.p1, a.edge.p2] : [a.edge.p2, a.edge.p1]
+    const [b1, b2] = comparePoints(b.edge.p1, b.edge.p2) <= 0 ? [b.edge.p1, b.edge.p2] : [b.edge.p2, b.edge.p1]
+  
+    const cmp1 = comparePoints(a1, b1)
+    if (cmp1 !== 0) return cmp1
+    return comparePoints(a2, b2)
+  }
+    
+      
   const edgeKeyComparator = (a, b) => {
     if (a.matchesOtherKey(b)) return 0
 
@@ -25,7 +40,7 @@ export default class EdgeKeys {
     return ab ? -1 : 1
   }
   
-    this.keys = new AVLTree(edgeKeyComparator)
+    this.keys = new AVLTree(comparator)
   }
 
   addKey (edgekey, p) {

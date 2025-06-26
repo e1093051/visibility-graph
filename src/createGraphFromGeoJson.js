@@ -78,10 +78,17 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
     // if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
 
     let isVisible = false
+    if (p.nodeId === 14 && p2.nodeId === 3) {
+      console.log("🔥 EDGE 14 → 3 被允許，開始追蹤原因")
+      // you can even throw if needed:
+      // throw new Error("Edge 14 → 3 created!")
+    }
     if (prev === null || ccw(p, prev, p2) !== 0 || !onSegment(p, prev, p2)) {
       if (openEdges.keys.size === 0) {
+        console.log("🟢 14→3 通過，因為沒有遮擋")
         isVisible = true
       } else if (!edgeIntersect(p, p2, openEdges.keys.min().edge)) {
+        console.log("🟡 14→3 通過，因為和 min edge 不相交")
         isVisible = true
       }
     } else if (!prevVisible) {
