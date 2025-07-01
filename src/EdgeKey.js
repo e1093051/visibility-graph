@@ -30,4 +30,23 @@ export default class EdgeKey {
     return this.edge.areEdgesEqual(otherKey.edge)
   }
 
+  getId() {
+    const id1 = this.p1.nodeId;
+    const id2 = this.p2.nodeId;
+    const edgeId = this.edge?.id ?? '';
+  
+  
+    return `${id1}-${id2}-e${edgeId}`;
+  }
+
+  toString() {
+    const p1 = this.edge.p1.nodeId;
+    const p2 = this.edge.p2.nodeId;
+  
+    // Always put smaller ID first for consistency
+    const [minId, maxId] = p1 < p2 ? [p1, p2] : [p2, p1];
+  
+    return `${minId}-${maxId}`;
+  }
+
 }

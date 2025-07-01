@@ -8,7 +8,7 @@ import { _renderSortedPoints, _renderOpenEdges } from './debug.js' //eslint-disa
 export const FULL_PROCESS = 0
 export const HALF_PROCESS = 1
 
-export function createGraphFromGeoJson (visibilityGraph) {
+export function createGraphFromGeoJson (visibilityGraph) {``
   processGraph(visibilityGraph)
 }
 
@@ -22,6 +22,7 @@ function processGraph (visibilityGraph) {
   const scan = HALF_PROCESS
   for (var i = 0; i < pointsLen; i++) {
     const p = points[i]
+    //console.log("Precessing point " + i + " as reference")
     processPoint(p, pointsLen, scan, visibilityGraph)
   }
 }
@@ -56,21 +57,26 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
 
   for (let ii = 0; ii < pointsLen; ii++) {
     const p2 = clonedPoints[ii]
+    //console.log("p2 is " + p2.nodeId)
     if (p2.isPointEqual(p)) continue
     if (scan === HALF_PROCESS && p.angleToPoint(p2) > Math.PI) {
       break
     }
+    
+    /*
+    console.log("edge from closest to furthest in round " + ii)
+    openEdges.keys.forEach(node => {
+      console.log(node.key.edge.p1.nodeId + " " + node.key.edge.p2.nodeId)
+    })
+      */
+      
 
     if (openEdges.keys.size > 0) {
       for (let iii = 0; iii < p2.edges.length; iii++) {
         const e = p2.edges[iii]
         if (ccw(p, p2, e.getOtherPointInEdge(p2)) === -1) {
-          const k = new EdgeKey(p, p2, e)
-          if (openEdges.keys.contains(k)) {
-            openEdges.keys.remove(k)
-          }
-          for (const edge of openEdges.keys.keys())      
-            console.log(p2.nodeId, edge.p1.nodeId,edge.p2.nodeId)
+          const k = new EdgeKey(p, p2, e);
+          openEdges.keys.remove(k)
         }
       }
     }
@@ -176,3 +182,5 @@ function polygonCrossing (p1, polyEdges) {
   if (intersectCount % 2 === 0) return false
   return true
 }
+
+
