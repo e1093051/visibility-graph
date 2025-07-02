@@ -7,6 +7,31 @@ export const pi2 = Math.PI / 2
 export function edgeIntersect (p1, q1, edge) {
   const p2 = edge.p1
   const q2 = edge.p2
+
+  // ===== (1) Fast bounding box check =====
+  const bbox1 = {
+    minX: Math.min(p1.x, q1.x),
+    minY: Math.min(p1.y, q1.y),
+    maxX: Math.max(p1.x, q1.x),
+    maxY: Math.max(p1.y, q1.y)
+  };
+  const bbox2 = {
+    minX: Math.min(p2.x, q2.x),
+    minY: Math.min(p2.y, q2.y),
+    maxX: Math.max(p2.x, q2.x),
+    maxY: Math.max(p2.y, q2.y)
+  };
+
+  // Early exit if bounding boxes don't overlap
+  if (
+    bbox1.maxX < bbox2.minX ||
+    bbox1.minX > bbox2.maxX ||
+    bbox1.maxY < bbox2.minY ||
+    bbox1.minY > bbox2.maxY
+  ) {
+    return false; // No possible intersection
+  }
+
   const o1 = ccw(p1, q1, p2)
   const o2 = ccw(p1, q1, q2)
   const o3 = ccw(p2, q2, p1)
