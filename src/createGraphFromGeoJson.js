@@ -2,7 +2,7 @@ import EdgeKeys from './EdgeKeys.js'
 import EdgeKey from './EdgeKey.js'
 import Point from './Point.js'
 
-import { edgeIntersect, onSegment, ccw, calcEdgeDistance } from './utils.js'
+import { edgeIntersect, onSegment, ccw, calcEdgeDistance, edgeCrossesHorizontalRay } from './utils.js'
 import { _renderSortedPoints, _renderOpenEdges } from './debug.js' //eslint-disable-line
 
 export const FULL_PROCESS = 0
@@ -40,11 +40,10 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
   const openEdges = new EdgeKeys()
   const pointInf = new Point([Infinity, p.y], -1)
   for (let ii = 0; ii < pointsLen; ii++) {
-    const e = edges[ii]
-    if (e.containsPoint(p)) continue
-    if (edgeIntersect(p, pointInf, e)) {
-      if (onSegment(p, e.p1, pointInf) || onSegment(p, e.p2, pointInf)) continue
-      openEdges.addKey(new EdgeKey(p, pointInf, e))
+    const e = edges[ii];
+    if (e.containsPoint(p)) continue;
+    if (edgeCrossesHorizontalRay(p, e)) {
+      openEdges.addKey(new EdgeKey(p, pointInf, e));
     }
   }
   if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
