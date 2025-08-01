@@ -77,3 +77,10 @@ Depending on your requirements you may also be able to convert your input data i
 * [Lee's o(n<sup>2</sup> log n) Visibility Graph Algorithm](https://github.com/davetcoleman/visibility_graph/blob/master/Visibility_Graph_Algorithm.pdf) paper by Dave Coleman
 * [Intro to path finding](https://www.redblobgames.com/pathfinding/)
   * And specifically a bit about [visibility graphs](https://www.redblobgames.com/pathfinding/visibility-graphs/)
+  * 
+
+
+## Optimisation
+* bounding box check for edgeIntersect function in utils.js
+* avoid square root calculation for distance in utils.js
+* create function edgeCrossesHorizontalRay to improve efficiency of ray casting, used in processPoint
