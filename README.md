@@ -83,4 +83,3 @@ Depending on your requirements you may also be able to convert your input data i
 ## Optimisation
 * bounding box check for edgeIntersect function in utils.js
 * avoid square root calculation for distance in utils.js
-* create function edgeCrossesHorizontalRay to improve efficiency of ray casting, used in processPoint
