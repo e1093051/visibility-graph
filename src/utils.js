@@ -31,7 +31,7 @@ export function edgeIntersect (p1, q1, edge) {
   ) {
     return false; // No possible intersection
   }
-  
+
   const o1 = ccw(p1, q1, p2)
   const o2 = ccw(p1, q1, q2)
   const o3 = ccw(p2, q2, p1)
@@ -113,15 +113,6 @@ export function intersectPoint (p1, p2, edge) {
 }
 
 export function calcEdgeDistance (p1, p2) {
-  return Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)
-}
-
-export function edgeCrossesHorizontalRay(p, edge) {
-  const { p1, p2 } = edge;
-  if ((p1.y > p.y) === (p2.y > p.y)) return false;
-
-  const t = (p.y - p1.y) / (p2.y - p1.y);
-  const x = p1.x + t * (p2.x - p1.x);
-  return x > p.x;
+  return (Math.pow(p2.x - p1.x, 2)) + Math.pow(p2.y - p1.y, 2)
 }
 
