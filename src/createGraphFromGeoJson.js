@@ -70,13 +70,10 @@ export function processPoint (p, pointsLen, scan, visibilityGraph) {
           if (index !== -1 && openEdges.keys[index].matchesOtherKey(k)) {
             openEdges.keys.splice(index, 1)
           }
-          for (const edge of openEdges.keys){
-            console.log(p2.nodeId,edge.p1.nodeId,edge.p2.nodeId)
-          }
         }
       }
     }
-    if (openEdges.keys.length > 100) console.log(openEdges.keys.length)
+    if (openEdges.keys.length > 100) (openEdges.keys.length)
 
     let isVisible = false
     if (prev === null || ccw(p, prev, p2) !== 0 || !onSegment(p, prev, p2)) {

@@ -7,6 +7,31 @@ export const pi2 = Math.PI / 2
 export function edgeIntersect (p1, q1, edge) {
   const p2 = edge.p1
   const q2 = edge.p2
+
+  // ===== (1) Fast bounding box check =====
+  const bbox1 = {
+    minX: Math.min(p1.x, q1.x),
+    minY: Math.min(p1.y, q1.y),
+    maxX: Math.max(p1.x, q1.x),
+    maxY: Math.max(p1.y, q1.y)
+  };
+  const bbox2 = {
+    minX: Math.min(p2.x, q2.x),
+    minY: Math.min(p2.y, q2.y),
+    maxX: Math.max(p2.x, q2.x),
+    maxY: Math.max(p2.y, q2.y)
+  };
+
+  // Early exit if bounding boxes don't overlap
+  if (
+    bbox1.maxX < bbox2.minX ||
+    bbox1.minX > bbox2.maxX ||
+    bbox1.maxY < bbox2.minY ||
+    bbox1.minY > bbox2.maxY
+  ) {
+    return false; // No possible intersection
+  }
+  
   const o1 = ccw(p1, q1, p2)
   const o2 = ccw(p1, q1, q2)
   const o3 = ccw(p2, q2, p1)
@@ -29,11 +54,12 @@ export function ccw (a, b, c) {
 }
 
 export function onSegment (p, q, r) {
-  if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x)) {
-    if (q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)) return true
-  }
-  return false
+  return (
+    Math.min(p.x, r.x) <= q.x && q.x <= Math.max(p.x, r.x) &&
+    Math.min(p.y, r.y) <= q.y && q.y <= Math.max(p.y, r.y)
+  );
 }
+
 
 const COLIN_TOLERANCE = 10
 const T = Math.pow(10, COLIN_TOLERANCE)
@@ -87,5 +113,15 @@ export function intersectPoint (p1, p2, edge) {
 }
 
 export function calcEdgeDistance (p1, p2) {
-  return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2))
+  return Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)
 }
+
+export function edgeCrossesHorizontalRay(p, edge) {
+  const { p1, p2 } = edge;
+  if ((p1.y > p.y) === (p2.y > p.y)) return false;
+
+  const t = (p.y - p1.y) / (p2.y - p1.y);
+  const x = p1.x + t * (p2.x - p1.x);
+  return x > p.x;
+}
+
