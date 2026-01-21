@@ -1,3 +1,13 @@
+## About This Fork
+
+This fork is used to explore and experiment with **different optimization strategies** for visibility graph construction.
+
+The `master` branch represents the baseline implementation.
+Other branches contain different optimizations that were explored and evaluated.
+
+
+
+
 # visibility-graph.js
 Visibility graph implementation to support shortest path calculations such as [dijkstra](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) or [a-star](https://en.wikipedia.org/wiki/A*_search_algorithm).
 
