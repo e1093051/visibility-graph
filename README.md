@@ -1,3 +1,5 @@
+### This branch explores optimization that may reduce runtime under certain condition, rather than improving worst-case complexity.
+
 # visibility-graph.js
 Visibility graph implementation to support shortest path calculations such as [dijkstra](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) or [a-star](https://en.wikipedia.org/wiki/A*_search_algorithm).
 
