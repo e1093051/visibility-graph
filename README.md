@@ -5,6 +5,22 @@ This fork is used to explore and experiment with **different optimization strate
 The `master` branch represents the baseline implementation.
 Other branches contain different optimizations that were explored and evaluated.
 
+## Branches Overview
+
+- `master`  
+  Baseline visibility graph implementation.
+
+- `AVL-structure`  
+  Exploration of using a tree-based ordered structure for maintaining active edges during angular sweep.
+
+- `branch-optimisation3`  
+  Optimization experiments focused on reducing intersection checks and improving sweep performance.
+
+- `optimise-final`  
+  Final version of selected optimization.
+
+- `update-sort-points`  
+  Integration of Cpp CGAL’s Arrangement_2 dual transformation for angular sorting.
 
 
 
